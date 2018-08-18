@@ -1,0 +1,55 @@
+<!-- L-System Fractals by Maira Zabuscha de Lima -->
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>L-System Fractals by Maira Zabuscha de Lima</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" type="text/css" href="fractals.css">
+</head>
+<body>
+    <span class="field">
+        L-System <select id="system">
+            <option>Dragon Curve</option>
+            <option>Gosper Curve</option>
+            <option>Dekkings Church</option>
+            <option>Cesaro Curve</option>
+            <option>Plant</option>
+            <option>Hilbert Curve</option>
+            <option>Koch Curve</option>
+            <option>Moore Curve</option>
+            <option>Pentigree</option>
+            <option>Pythagoras Tree</option>
+            <option>Quadratic Gosper Curve</option>
+            <option>Quadratic Koch Curve</option>
+            <option>Quadratic Koch Island</option>
+            <option>Sierpinski Triangle</option>
+            <option>Sierpinski Triangle V2</option>
+            <option>XBorder</option>
+        </select>
+    </span>
+    <span class="field">
+        background <select id="bkg">
+            <option>transparent</option>
+            <option>black</option>
+            <option>white</option>
+        </select>
+    </span>
+    <span class="field">
+        line <select id="line">
+            <option>rainbow</option>
+            <option>white</option>
+            <option>black</option>
+        </select>
+    </span>
+    <span class="field">
+        level <input type="text" id="level" size="3" maxlength="2" value="6" />
+    </span>
+    <span class="field">
+        size <input type="text" id="size" size="5" maxlength="4" value="800" />
+    </span>
+    <button id="botao">generate</button>
+    <span id="msg"></span>
+    <canvas id="mycanvas"></canvas>
+    <script src="fractals.js"></script>
+</body>
+</html>
