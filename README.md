@@ -4,6 +4,6 @@
 
 You can see the javascript code working [here](https://mairazl.neocities.org/fractals/)!
 
-Or you can check the python code [here]('L-System fractals.ipynb').
+Or you can check the python code [here](L-System-fractals.ipynb).
 
 ![dragon.svg.svg](fractals/dragon.svg)
