@@ -1,8 +1,6 @@
 /* L-System Fractals by Maira Zabuscha de Lima */
 (function () {
 document.getElementById("generate").addEventListener("click", generate, false);
-document.getElementById("msg").innerHTML = "";
-document.getElementById("msg").style.display = "none";
 
 function expand (system, level) {
     var i, j, segments, instructions;
