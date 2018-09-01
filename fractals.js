@@ -1,153 +1,22 @@
 /* L-System Fractals by Maira Zabuscha de Lima */
 (function () {
-document.getElementById("generate").addEventListener("click", draw, false);
+document.getElementById("generate").addEventListener("click", generate, false);
 document.getElementById("msg").innerHTML = "";
 document.getElementById("msg").style.display = "none";
 
-lsystems = [
-{
-    name: 'Dragon Curve',
-    seed: 'FX',
-    direction: 90,
-    angle: 90,
-    rules: {'X':'X-YF-', 'Y':'+FX+Y'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Gosper Curve',
-    seed: 'F',
-    direction: 0,
-    angle: 60,
-    rules: {'F':'F-G--G+F++FF+G-', 'G':'+F-GG--G-F++F+G'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Dekkings Church',
-    seed: 'WXYZ',
-    direction: 0,
-    angle: 90,
-    rules: {'F':'A', 'W':'FW+F-ZFW-F+X', 'Z':'++F--Y-F+X++F--Y-F+X', 'Y':'++F--Y+F-Z', 'X':'FW+F-Z'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Cesaro Curve',
-    seed: 'F',
-    direction: 0,
-    angle: 85,
-    rules: {'F':'F+F--F+F'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Plant',
-    seed: 'X',
-    direction: 60,
-    angle: 25,
-    rules: {'X':'F+[[X]-X]-F[-FX]+X', 'F':'FF'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Hilbert Curve',
-    seed: 'X',
-    direction: 90,
-    angle: 90,
-    rules: {'X':'+YF-XFX-FY+', 'Y':'-XF+YFY+FX-'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Koch Curve',
-    seed: 'F--F--F',
-    direction: 0,
-    angle: 60,
-    rules: {'F':'F+F--F+F'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Moore Curve',
-    seed: 'XFX+F+XFX',
-    direction: 90,
-    angle: 90,
-    rules: {'X':'-YF+XFX+FY-', 'Y':'+XF-YFY-FX+'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Pentigree',
-    seed: 'F',
-    direction: 60,
-    angle: 36,
-    rules: {'F':'+F++F----F--F++F++F-'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Pythagoras Tree',
-    seed: 'F',
-    direction: 90,
-    angle: 45,
-    rules: {'G':'GG', 'F':'G[+F]-F'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Quadratic Gosper Curve',
-    seed: '-F',
-    direction: 90,
-    angle: 90,
-    rules: {'G':'GG-F-F+G+G-F-FG+F+GGF-G+F+GG+F-GF-F-G+G+FF-', 'F':'+GG-F-F+G+GF+G-FF-G-F+GFF-G-FG+G+F-F-G+G+FF'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Quadratic Koch Curve',
-    seed: 'F',
-    direction: 0,
-    angle: 90,
-    rules: {'F':'F+F-F-F+F'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Quadratic Koch Island',
-    seed: 'F-F-F-F',
-    direction: 0,
-    angle: 90,
-    rules: {'F':'F+FF-FF-F-F+F+FF-F-F+F+FF+FF-F'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Sierpinski Triangle',
-    seed: 'F-G-G',
-    direction: 60,
-    angle: 120,
-    rules: {'G':'GG', 'F':'F-G+F+G-F'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'Sierpinski Triangle V2',
-    seed: 'F',
-    direction: 0,
-    angle: 60,
-    rules: {'G':'-F+G+F-', 'F':'+G-F-G+'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-},
-{
-    name: 'XBorder',
-    seed: 'XYXYXYX+XYXYXYX+XYXYXYX+XYXYXYX',
-    direction: 0,
-    angle: 90,
-    rules: {'F':'A', 'X':'FX+FX+FXFY-FY-', 'Y':'+FX+FXFY-FY-FY'},
-    level : 0, instructions : '', width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
-}
-];
-
 function expand (system, level) {
     var i, j, segments, instructions;
-    var seed = system.seed;
+    system.instructions.push(system.seed);
     system.level = 0;
     for (i = 1; i <= level; i++) {
         instructions = "";
         segments = 0;
-        for (j = 0; j < seed.length; j++) {
-            if (seed.charAt(j) in system.rules) {
-                instructions = instructions.concat(system.rules[seed.charAt(j)]);
+        for (j = 0; j < system.instructions[i-1].length; j++) {
+            if (system.instructions[i-1].charAt(j) in system.rules) {
+                instructions = instructions.concat(system.rules[system.instructions[i-1].charAt(j)]);
             }
             else {
-                instructions = instructions.concat(seed.charAt(j));
+                instructions = instructions.concat(system.instructions[i-1].charAt(j));
             }
         }
         for (j = 0; j < instructions.length; j++) {
@@ -156,15 +25,11 @@ function expand (system, level) {
             }
         }
         system.level = i;
-        if (i < level && segments > 2097152) {
-            document.getElementById("msg").innerHTML = system.name+' maximum level: '+system.level+'.';
-            document.getElementById("msg").style.display = "inline-block";
+        system.instructions.push(instructions);
+        if (segments > 2097152) {
             break;
         }
-        seed = instructions;
     }
-    system.instructions = instructions;
-    
 }
 
 function dimensions(system, size) {
@@ -172,7 +37,7 @@ function dimensions(system, size) {
     var bkpx = [];
     var bkpy = [];
     var bkpa = [];
-    if (system.level > 0) {
+    if (system.level >= 0) {
         system.segment_length = 100;
         system.width = 0
         system.height = 0
@@ -189,8 +54,8 @@ function dimensions(system, size) {
             bkpy = [];
             bkpa = [];
             a = system.direction;
-            for (j = 0; j < system.instructions.length; j++) {
-                charac = system.instructions.charAt(j);
+            for (j = 0; j < system.instructions[system.level].length; j++) {
+                charac = system.instructions[system.level].charAt(j);
                 if (charac == 'F' || charac == 'G') {
                     x += system.segment_length*(Math.cos(a/180*Math.PI));
                     y += system.segment_length*(Math.sin(a/180*Math.PI));
@@ -226,11 +91,10 @@ function dimensions(system, size) {
             }
         }
         if (system.segment_length < 2) {
-            system.instructions = "";
-            system.level = 0;
-                var msg = document.getElementById("msg").innerHTML;
-                document.getElementById("msg").innerHTML = msg+" Error: segment length less than 2 pixels, try a smaller level or a bigger size.";
-                document.getElementById("msg").style.display = "inline-block";
+            if (system.level > 0) {
+                system.level -= 1;
+                dimensions(system, size);
+            }
         }
         else {
             system.x_ini = Math.floor(20 - x_min);
@@ -275,17 +139,194 @@ function color(i, line) {
     return colors;
 }
 
-function draw() {
-    document.getElementById("msg").innerHTML = "";
-    document.getElementById("msg").style.display = "none";
+function draw(bkg, line, system, canvas) {
     var i, a, color_ct, x, y, xi, yi, charac;
     var bkpx = [];
     var bkpy = [];
     var bkpa = [];
+    if (system.segment_length > 1) {
+        a = system.direction;
+        x = system.x_ini;
+        y = system.y_ini;
+        color_ct = 0;
+        var ctx = canvas.getContext('2d');
+        canvas.width = system.width;
+        canvas.height = system.height;
+        if (bkg == 0) ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+        else if (bkg == 1) ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+        else if (bkg == 2) ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+        ctx.fillRect(0,0,system.width,system.height);
+        for (i = 0; i < system.instructions[system.level].length; i++) {
+            charac = system.instructions[system.level].charAt(i);
+            if (charac == 'F' || charac == 'G') {
+                ctx.strokeStyle = color(color_ct, line);
+                color_ct += 1;
+                xi = x;
+                yi = y;
+                x += system.segment_length*Math.cos(a/180*Math.PI);
+                y += system.segment_length*Math.sin(a/180*Math.PI);
+                ctx.beginPath();
+                ctx.moveTo(Math.floor(xi)+0.5,system.height-Math.round(yi)+0.5);
+                ctx.lineTo(Math.floor(x)+0.5,system.height-Math.round(y)+0.5);
+                ctx.stroke();
+            }
+            else if (charac == '+') {
+                a += system.angle;
+                if (a > 360) a -= 360;
+            }
+            else if (charac == '-') {
+                a -= system.angle;
+                if (a < 0) a += 360;
+            }
+            else if (charac == '[') {
+                bkpx.push(x);
+                bkpy.push(y);
+                bkpa.push(a);
+            }
+            else if (charac == ']') {
+                x = bkpx.pop();
+                y = bkpy.pop();
+                a = bkpa.pop();
+            }
+        }
+    }
+}
+
+function generate() {
+    var msg = document.getElementById("msg");
+    msg.innerHTML = "";
+    msg.style.display = "none";
+    lsystems = [
+    {
+        name: 'Dragon Curve',
+        seed: 'FX',
+        direction: 90,
+        angle: 90,
+        rules: {'X':'X-YF-', 'Y':'+FX+Y'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Gosper Curve',
+        seed: 'F',
+        direction: 0,
+        angle: 60,
+        rules: {'F':'F-G--G+F++FF+G-', 'G':'+F-GG--G-F++F+G'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Dekkings Church',
+        seed: 'WXYZ',
+        direction: 0,
+        angle: 90,
+        rules: {'F':'A', 'W':'FW+F-ZFW-F+X', 'Z':'++F--Y-F+X++F--Y-F+X', 'Y':'++F--Y+F-Z', 'X':'FW+F-Z'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Cesaro Curve',
+        seed: 'F',
+        direction: 0,
+        angle: 85,
+        rules: {'F':'F+F--F+F'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Plant',
+        seed: 'X',
+        direction: 60,
+        angle: 25,
+        rules: {'X':'F+[[X]-X]-F[-FX]+X', 'F':'FF'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Hilbert Curve',
+        seed: 'X',
+        direction: 90,
+        angle: 90,
+        rules: {'X':'+YF-XFX-FY+', 'Y':'-XF+YFY+FX-'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Koch Curve',
+        seed: 'F--F--F',
+        direction: 300,
+        angle: 60,
+        rules: {'F':'F+F--F+F'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Moore Curve',
+        seed: 'XFX+F+XFX',
+        direction: 90,
+        angle: 90,
+        rules: {'X':'-YF+XFX+FY-', 'Y':'+XF-YFY-FX+'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Pentigree',
+        seed: 'F',
+        direction: 60,
+        angle: 36,
+        rules: {'F':'+F++F----F--F++F++F-'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Pythagoras Tree',
+        seed: 'F',
+        direction: 90,
+        angle: 45,
+        rules: {'G':'GG', 'F':'G[+F]-F'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Quadratic Gosper Curve',
+        seed: '-F',
+        direction: 90,
+        angle: 90,
+        rules: {'G':'GG-F-F+G+G-F-FG+F+GGF-G+F+GG+F-GF-F-G+G+FF-', 'F':'+GG-F-F+G+GF+G-FF-G-F+GFF-G-FG+G+F-F-G+G+FF'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Quadratic Koch Curve',
+        seed: 'F',
+        direction: 0,
+        angle: 90,
+        rules: {'F':'F+F-F-F+F'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Quadratic Koch Island',
+        seed: 'F-F-F-F',
+        direction: 0,
+        angle: 90,
+        rules: {'F':'F+FF-FF-F-F+F+FF-F-F+F+FF+FF-F'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Sierpinski Triangle',
+        seed: 'F-G-G',
+        direction: 60,
+        angle: 120,
+        rules: {'G':'GG', 'F':'F-G+F+G-F'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'Sierpinski Triangle V2',
+        seed: 'F',
+        direction: 0,
+        angle: 60,
+        rules: {'G':'-F+G+F-', 'F':'+G-F-G+'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    },
+    {
+        name: 'XBorder',
+        seed: 'XYXYXYX+XYXYXYX+XYXYXYX+XYXYXYX',
+        direction: 0,
+        angle: 90,
+        rules: {'F':'A', 'X':'FX+FX+FXFY-FY-', 'Y':'+FX+FXFY-FY-FY'},
+        level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
+    }];
     var level = parseInt(document.getElementById('level').value);
     var size = parseInt(document.getElementById('size').value);
-    if (size < 120) size = 120;
-    if (size > 4096) size = 4096;
     var bkg = document.getElementById('bkg').selectedIndex;
     var line = document.getElementById('line').selectedIndex;
     var s = document.getElementById('system').selectedIndex;
@@ -294,58 +335,30 @@ function draw() {
     if (canvas.getContext) {
         canvas.width = 1;
         canvas.height = 1;
+        if (size < 120) {
+            size = 120;
+            document.getElementById('size').value = size.toString();
+        }
+        else if (size > 4096) {
+            size = 4096;
+            document.getElementById('size').value = size.toString();
+        }
         expand(system, level);
         dimensions(system, size);
+        if (system.level < level) {
+            document.getElementById('level').value = system.level.toString();
+        }
         if (system.segment_length > 1) {
-            a = system.direction;
-            x = system.x_ini;
-            y = system.y_ini;
-            color_ct = 0;
-            var ctx = canvas.getContext('2d');
-            canvas.width = system.width;
-            canvas.height = system.height;
-            if (bkg == 0) ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-            else if (bkg == 1) ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-            else if (bkg == 2) ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-            ctx.fillRect(0,0,system.width,system.height);
-            for (i = 0; i < system.instructions.length; i++) {
-                charac = system.instructions.charAt(i);
-                if (charac == 'F' || charac == 'G') {
-                    ctx.strokeStyle = color(color_ct, line);
-                    color_ct += 1;
-                    xi = x;
-                    yi = y;
-                    x += system.segment_length*Math.cos(a/180*Math.PI);
-                    y += system.segment_length*Math.sin(a/180*Math.PI);
-                    ctx.beginPath();
-                    ctx.moveTo(Math.floor(xi)+0.5,system.height-Math.round(yi)+0.5);
-                    ctx.lineTo(Math.floor(x)+0.5,system.height-Math.round(y)+0.5);
-                    ctx.stroke();
-                }
-                else if (charac == '+') {
-                    a += system.angle;
-                    if (a > 360) a -= 360;
-                }
-                else if (charac == '-') {
-                    a -= system.angle;
-                    if (a < 0) a += 360;
-                }
-                else if (charac == '[') {
-                    bkpx.push(x);
-                    bkpy.push(y);
-                    bkpa.push(a);
-                }
-                else if (charac == ']') {
-                    x = bkpx.pop();
-                    y = bkpy.pop();
-                    a = bkpa.pop();
-                }
-            }
+            draw(bkg, line, system, canvas);
+        }
+        else {
+            msg.innerHTML = 'Error: segment length less than 2 pixels, try a smaller level or a bigger size.';
+            msg.style.display = "inline-block";
         }
     }
     else {
-        document.getElementById("msg").innerHTML = 'Canvas error.';
-        document.getElementById("msg").style.display = "inline-block";
+        msg.innerHTML = 'Canvas error.';
+        msg.style.display = "inline-block";
     }
 }
 
