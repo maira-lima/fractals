@@ -24,11 +24,20 @@ canvas {
     display: block;
 }
 
-span.field, button, #msg {
+span.field, button {
     display: inline-block;
     background-color: #FFFFFF;
     color: #000000;
     border: 1px solid #000000;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 1em;
+    padding: 3px;
+    margin: 5px;
+}
+
+#msg {
+    display: none;
+    color: #000000;
     font-family: Consolas, 'Courier New', monospace;
     font-size: 1em;
     padding: 3px;
