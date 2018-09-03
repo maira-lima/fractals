@@ -197,7 +197,7 @@ function generate() {
     var bkg = document.getElementById('bkg').selectedIndex;
     var line = document.getElementById('line').selectedIndex;
     var system = document.getElementById('system').selectedIndex;
-    var canvas = document.getElementById('fractal');
+    var canvas = document.getElementById('canvas');
     msg.innerHTML = "";
     msg.style.display = "none";
     lsystems = [
