@@ -2,9 +2,10 @@
 (function () {
 document.getElementById("generate").addEventListener("click", generate, false);
 
-function expand (system, level) {
+function expand(system, level) {
     var i, j, segments, instructions;
     system.instructions.push(system.seed);
+    if (level < 0) level = 0;
     system.level = 0;
     for (i = 1; i <= level; i++) {
         instructions = "";
@@ -35,71 +36,70 @@ function dimensions(system, size) {
     var bkpx = [];
     var bkpy = [];
     var bkpa = [];
-    if (system.level >= 0) {
-        system.segment_length = 100;
-        system.width = 0
-        system.height = 0
-        system.x_ini = 0
-        system.y_ini = 0
-        for (i = 0; system.segment_length > 1 && i < 2; i++) {
-            x_max = 0;
-            x_min = 0;
-            y_max = 0;
-            y_min = 0;
-            x = 0;
-            y = 0;
-            bkpx = [];
-            bkpy = [];
-            bkpa = [];
-            a = system.direction;
-            for (j = 0; j < system.instructions[system.level].length; j++) {
-                charac = system.instructions[system.level].charAt(j);
-                if (charac == 'F' || charac == 'G') {
-                    x += system.segment_length*(Math.cos(a/180*Math.PI));
-                    y += system.segment_length*(Math.sin(a/180*Math.PI));
-                    if (x < x_min) x_min = x;
-                    if (x > x_max) x_max = x;
-                    if (y < y_min) y_min = y;
-                    if (y > y_max) y_max = y;
-                }
-                else if (charac == '+') {
-                    a += system.angle;
-                    if (a > 360) a -= 360;
-                }
-                else if (charac == '-') {
-                    a -= system.angle;
-                    if (a < 0) a += 360;
-                }
-                else if (charac == '[') {
-                    bkpx.push(x);
-                    bkpy.push(y);
-                    bkpa.push(a);
-                }
-                else if (charac == ']') {
-                    x = bkpx.pop();
-                    y = bkpy.pop();
-                    a = bkpa.pop();
-                }
+    if (system.level < 0) system.level = 0;
+    system.segment_length = 100;
+    system.width = 0
+    system.height = 0
+    system.x_ini = 0
+    system.y_ini = 0
+    for (i = 0; system.segment_length > 1 && i < 2; i++) {
+        x_max = 0;
+        x_min = 0;
+        y_max = 0;
+        y_min = 0;
+        x = 0;
+        y = 0;
+        bkpx = [];
+        bkpy = [];
+        bkpa = [];
+        a = system.direction;
+        for (j = 0; j < system.instructions[system.level].length; j++) {
+            charac = system.instructions[system.level].charAt(j);
+            if (charac == 'F' || charac == 'G') {
+                x += system.segment_length*(Math.cos(a/180*Math.PI));
+                y += system.segment_length*(Math.sin(a/180*Math.PI));
+                if (x < x_min) x_min = x;
+                if (x > x_max) x_max = x;
+                if (y < y_min) y_min = y;
+                if (y > y_max) y_max = y;
             }
-            if (i == 0) {
-                f1 = (size-40)/(x_max - x_min);
-                f2 = (size-40)/(y_max - y_min);
-                f = f1 > f2 ? f2 : f1;
-                system.segment_length = Math.floor(system.segment_length*f);
+            else if (charac == '+') {
+                a += system.angle;
+                if (a > 360) a -= 360;
+            }
+            else if (charac == '-') {
+                a -= system.angle;
+                if (a < 0) a += 360;
+            }
+            else if (charac == '[') {
+                bkpx.push(x);
+                bkpy.push(y);
+                bkpa.push(a);
+            }
+            else if (charac == ']') {
+                x = bkpx.pop();
+                y = bkpy.pop();
+                a = bkpa.pop();
             }
         }
-        if (system.segment_length < 2) {
-            if (system.level > 0) {
-                system.level -= 1;
-                dimensions(system, size);
-            }
+        if (i == 0) {
+            f1 = (size-40)/(x_max - x_min);
+            f2 = (size-40)/(y_max - y_min);
+            f = f1 > f2 ? f2 : f1;
+            system.segment_length = Math.floor(system.segment_length*f);
         }
-        else {
-            system.x_ini = Math.floor(20 - x_min);
-            system.y_ini = Math.floor(20 - y_min);
-            system.width = Math.floor(x_max - x_min + 40);
-            system.height = Math.floor(y_max - y_min + 40);
+    }
+    if (system.segment_length < 2) {
+        if (system.level > 0) {
+            system.level -= 1;
+            dimensions(system, size);
         }
+    }
+    else {
+        system.x_ini = Math.floor(20 - x_min);
+        system.y_ini = Math.floor(20 - y_min);
+        system.width = Math.floor(x_max - x_min + 40);
+        system.height = Math.floor(y_max - y_min + 40);
     }
 }
 
@@ -192,6 +192,12 @@ function draw(bkg, line, system, canvas) {
 
 function generate() {
     var msg = document.getElementById("msg");
+    var level = document.getElementById('level');
+    var size = document.getElementById('size');
+    var bkg = document.getElementById('bkg').selectedIndex;
+    var line = document.getElementById('line').selectedIndex;
+    var system = document.getElementById('system').selectedIndex;
+    var canvas = document.getElementById('fractal');
     msg.innerHTML = "";
     msg.style.display = "none";
     lsystems = [
@@ -323,31 +329,20 @@ function generate() {
         rules: {'F':'A', 'X':'FX+FX+FXFY-FY-', 'Y':'+FX+FXFY-FY-FY'},
         level : 0, instructions : [], width : 0, height : 0, x_ini : 0, y_ini : 0, segment_length : 0
     }];
-    var level = parseInt(document.getElementById('level').value);
-    var size = parseInt(document.getElementById('size').value);
-    var bkg = document.getElementById('bkg').selectedIndex;
-    var line = document.getElementById('line').selectedIndex;
-    var s = document.getElementById('system').selectedIndex;
-    var system = lsystems[s];
-    var canvas = document.getElementById('fractal');
     if (canvas.getContext) {
         canvas.width = 1;
         canvas.height = 1;
-        if (size < 120) {
-            size = 120;
-            document.getElementById('size').value = size.toString();
-        }
-        else if (size > 4096) {
-            size = 4096;
-            document.getElementById('size').value = size.toString();
-        }
-        expand(system, level);
-        dimensions(system, size);
-        if (system.level < level) {
-            document.getElementById('level').value = system.level.toString();
-        }
-        if (system.segment_length > 1) {
-            draw(bkg, line, system, canvas);
+        var l = parseInt(level.value);
+        if (isNaN(l) || l < 0) l = 0;
+        expand(lsystems[system], l);
+        var s = parseInt(size.value);
+        if (isNaN(s) || s < 120) s = 120;
+        else if (s > 4096) s = 4096;
+        size.value = s.toString();
+        dimensions(lsystems[system], s);
+        level.value = lsystems[system].level.toString();
+        if (lsystems[system].segment_length > 1) {
+            draw(bkg, line, lsystems[system], canvas);
         }
         else {
             msg.innerHTML = 'Error: segment length less than 2 pixels, try a smaller level or a bigger size.';
